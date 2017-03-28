@@ -14,11 +14,12 @@ voltage at A0 should decrease.
 Development environment specifics:
 Arduino 1.6.7
 ******************************************************************************/
-const int Thumb = A0; // Pin connected to voltage divider output
-const int Index = A1; 
-const int Middle = A2;
-const int Ring = A3;
-const int Pinky = A4; 
+// Pin connected to voltage divider output
+const int Thumb = A0; //Blue
+const int Index = A1; //Pink
+const int Middle = A2; //Yellow has gap in middle
+const int Ring = A3; //Green 
+const int Pinky = A4; //No color
 
 // Measure the voltage at 5V and the actual resistance of your
 // 22k resistor, and enter them below:
@@ -42,16 +43,19 @@ const float pB = 27200.0; //pinky bent
 void setup() 
 {
   Serial.begin(9600);
+  
   pinMode(Thumb, INPUT);
   pinMode(Index, INPUT);
   pinMode(Middle, INPUT);
   pinMode(Ring, INPUT);
+  
   pinMode(Pinky, INPUT);
 }
 
 void loop() 
 {
   // Read the ADC, and calculate voltage and resistance from it
+  
   int tADC = analogRead(Thumb);
   int iADC = analogRead(Index);
   int mADC = analogRead(Middle);
@@ -66,12 +70,13 @@ void loop()
   float pV = pADC * VCC / 1023.0;
 
   //Calculate Resistance
+ 
   float tR = R_DIV * (VCC / tV - 1.0);
   float iR = R_DIV * (VCC / iV - 1.0);
   float mR = R_DIV * (VCC / mV - 1.0);
   float rR = R_DIV * (VCC / rV - 1.0);
   float pR = R_DIV * (VCC / pV - 1.0);
-  
+ 
   Serial.println("Thumb Resistance: " + String(tR) + " ohms");
   Serial.println("Index Resistance: " + String(iR) + " ohms");
   Serial.println("Middle Resistance: " + String(mR) + " ohms");
@@ -87,6 +92,7 @@ void loop()
                    0, 90.0);
   float mAngle = map(mR, mS, mB, 0, 90.0);
   float rAngle = map(rR, rS, rB, 0, 90.0);
+ 
   float pAngle = map(pR, pS, pB, 0, 90.0);
   
   Serial.println("Thumb Bend: " + String(tAngle) + " degrees");
