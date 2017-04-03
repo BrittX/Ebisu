@@ -4,7 +4,7 @@ public class main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String trnSet = "";
+		String trnSet;
 		String testSet;
 		int numIn;
 		int numClasses;
@@ -38,9 +38,9 @@ public class main {
 			int numLines = Integer.parseInt(br.readLine());
 			for(int i =0; i < numLines; i++){
 				String[] linearr = br.readLine().split(",");
-				dataObject temp = new dataObject(Integer.parseInt(linearr[0]),numInputs);
+				dataObject temp = new dataObject(Integer.parseInt(linearr[numInputs]),numInputs);
 				for(int y = 0; y < numInputs; y++){
-					temp.inputs[y] = Double.parseDouble(linearr[y+1]);
+					temp.inputs[y] = Double.parseDouble(linearr[y]);
 				}
 				data.add(temp);
 			}
