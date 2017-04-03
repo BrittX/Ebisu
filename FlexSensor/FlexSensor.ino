@@ -76,13 +76,14 @@ void loop()
   float mR = R_DIV * (VCC / mV - 1.0);
   float rR = R_DIV * (VCC / rV - 1.0);
   float pR = R_DIV * (VCC / pV - 1.0);
- 
+
+ /*
   Serial.println("Thumb Resistance: " + String(tR) + " ohms");
   Serial.println("Index Resistance: " + String(iR) + " ohms");
   Serial.println("Middle Resistance: " + String(mR) + " ohms");
   Serial.println("Ring Resistance: " + String(rR) + " ohms");
   Serial.println("Pinky Resistance: " + String(pR) + " ohms");
- 
+ */
   // Use the calculated resistance to estimate the sensor's
   // bend angle:
   //float tAngle = map(tR, STRAIGHT_RESISTANCE, BEND_RESISTANCE,
@@ -94,14 +95,19 @@ void loop()
   float rAngle = map(rR, rS, rB, 0, 90.0);
  
   float pAngle = map(pR, pS, pB, 0, 90.0);
-  
+
+  /*
   Serial.println("Thumb Bend: " + String(tAngle) + " degrees");
   Serial.println("Index Bend: " + String(iAngle) + " degrees");
   Serial.println("Middle Bend: " + String(mAngle) + " degrees");
   Serial.println("Ring Bend: " + String(rAngle) + " degrees");
   Serial.println("Pinky Bend: " + String(pAngle) + " degrees");
   Serial.println();
+  */
+  //Prints out the degrees for each finger thumb-index-middle-ring-pinky
+  Serial.println(String(tAngle) + "," + String(iAngle) + "," + String(mAngle) + "," + String(rAngle) + "," + String(pAngle));
 
-  delay(500);
+ //Wait 1 second before printing again
+  delay(1000);
 }
 
