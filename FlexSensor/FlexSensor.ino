@@ -30,8 +30,8 @@ const float R_DIV = 21900.0; // Measured resistance of 22k resistor
 // accurately calculate bend degree.
 //const float STRAIGHT_RESISTANCE = 15300.0; // resistance when straight
 //const float BEND_RESISTANCE = 27500.0; // resistance at 90 deg
-const float tS = 13150.0; // when straight
-const float tB = 32500.0; //when bent
+const float tS = 17080.0; // when straight
+const float tB = 40500.0; //when bent
 const float iS = 14900.0; // index when straight
 const float iB = 31500.0; //index when bent
 const float mS = 14820.0; //middle straight
