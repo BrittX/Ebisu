@@ -6,11 +6,13 @@ public class main {
 		// TODO Auto-generated method stub
 		String trnSet;
 		String testSet;
+		String config;
 		int numIn;
 		int numClasses;
 		ArrayList<Neuron> Net = new ArrayList<Neuron>();
-		if (args.length < 4){
-			System.out.println("Invalid Parameters");
+		if (args.length < 5){
+			System.out.println("Invalid Parameters."
+			System.out.println("Correct Parameters: Training Set (File), Testing Set (File), No. of Inputs(Int), No. of Starting Classes (int), Config (File)");
 			System.exit(1);
 		}
 		//assign starting variables
@@ -18,13 +20,30 @@ public class main {
 		testSet = args[1];
 		numIn = Integer.parseInt(args[2]);
 		numClasses = Integer.parseInt(args[3]);
+		config = args[4];
 		System.out.println("Starting variables assigned");
 		//initialize network
 		initNet(Net,numIn,numClasses);
 		//retrieve training data set
 		ArrayList train = new ArrayList<dataObject>();
+		ArrayList dict = new ArrayList<String>();
+		initConfig();
+		//newClassProt
 		retrieveData(train, trnSet, numIn);
 		learn(Net,train);
+		test();
+	}
+	public static void initConfig(ArrayList<String> dict, String config){
+			try{
+				BufferedReader br = new BufferedReader(new FileReader(new File(config)))
+				String temp = br.readLine();
+				while (temp != null){
+					
+				}
+			catch (Exception e){
+				System.out.println(e.toString());
+			}
+		}
 	}
 	public static void initNet(ArrayList<Neuron> Net, int numIn, int numClasses){
 		//initialize input layer net
