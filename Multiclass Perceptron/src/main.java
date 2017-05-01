@@ -77,11 +77,10 @@ public class main {
 		boolean perfect = false;
 		int c = 0;
 		while(!perfect){
-			System.out.println("epoch number: " + c);
+			System.out.println("current epoch number: " + c);
 			perfect = true;
 			for(dataObject sample : data){
 				int ans = feed(Net,sample);
-				//System.out.println(ans);
 				if (ans != sample.tag){
 					perfect = false;
 					int i = 0;
@@ -94,7 +93,7 @@ public class main {
 			}
 			c++;
 		}
-		System.out.println("learning completed");
+		System.out.println("Learning completed in " + c + "epochs.");
 	}
 	public static void test(ArrayList<Neuron> Net, ArrayList<dataObject> data, ArrayList<String> dict){
 			float accuracy = 0.0f;
