@@ -87,12 +87,13 @@ public class main {
 			for(dataObject sample : data){
 				int ans = feed(Net,sample);
 				if (ans == 0){
+					System.out.println("New Node Type recognized");
+					perfect = false;
 					int i = 0;
 					for(Neuron n : Net){
 						n.Weights.add(n.Weights.get(0) + 0.0125*sample.inputs[i]);
 						sample.setTag(n.Weights.size()-1);
 						n.Weights.set(0,(n.Weights.get(0) - 0.0125*sample.inputs[i])); //new node recognized
-						System.out.println("New Node Type recognized");
 						i++;
 					}
 				}
@@ -115,7 +116,8 @@ public class main {
 			int numSamp = 0;
 			for(dataObject sample : data){
 				int ans = feed(Net,sample);
-				System.out.println(dict.get(ans));
+				System.out.println(ans);
+				
 				if(ans == sample.tag)
 					accuracy += 1.0f;
 				numSamp++;
