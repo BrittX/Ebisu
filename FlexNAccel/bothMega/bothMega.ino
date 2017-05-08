@@ -221,7 +221,7 @@ void loop() {
             //Prints out the degrees for each finger thumb-index-middle-ring-pinky and MPU data
             Serial.println(String(tAngle) + "," + String(iAngle) + "," + String(mAngle) + "," + String(rAngle) + "," + String(pAngle) + "," + ypr[0] * 180/M_PI + "," + ypr[1] * 180/M_PI + "," + ypr[2] * 180/M_PI);
           
-            delay(500); //wait half a second before each new line of data
+            delay(50); //wait half a second before each new line of data
         #endif
 
          // blink LED to indicate activity
