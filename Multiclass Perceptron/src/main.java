@@ -125,4 +125,13 @@ public class main {
 		}
 		return maxid;
 	}
+	public static void preprocessingRoutine(ArrayList data){
+		//remove noise
+		
+		//collapse idle nodes
+		
+		//separate dynamic nodes using association net
+		
+		
+	}
 }
