@@ -23,7 +23,7 @@ public class main {
 		config = args[4];
 		System.out.println("Starting variables assigned");
 		//initialize network
-		initNet(Net,numIn,numClasses);
+		initNet(Net,numIn,numClasses + 1);
 		//retrieve training data set
 		ArrayList train = new ArrayList<dataObject>();
 		ArrayList testingData = new ArrayList<dataObject>();
@@ -81,12 +81,18 @@ public class main {
 			perfect = true;
 			for(dataObject sample : data){
 				int ans = feed(Net,sample);
-				if (ans != sample.tag){
+				if (ans == 0){
+					n.Weights.add(n.Weights.get(0) + 0.0125*sample.inputs[i]);
+					sample.setTag(n.Weights.size()-1);
+					n.Weights.set(0) = n.Weights.get(0) - 0.0125*sample.inputs[i]; //new node recognized
+					System.out.println("New Node Type recognized");
+				}
+				else if (ans != sample.tag){
 					perfect = false;
 					int i = 0;
 					for(Neuron n : Net){
-						n.Weights[ans] -= 0.0125*sample.inputs[i];
-						n.Weights[sample.tag] += 0.0125*sample.inputs[i];
+						n.Weights.set(ans) = n.Weights.get(ans) - 0.0125*sample.inputs[i];
+						n.Weights.set(sample.tag) = n.Weights.get(sample.tag) + 0.0125*sample.inputs[i];
 						i++;
 					}
 				}
@@ -110,27 +116,51 @@ public class main {
 			System.out.println("Testing complete with " + accuracy*100 + "% accuracy.");
 		}
 	public static int feed(ArrayList<Neuron> Net, dataObject sample){
-		double[] sums = new double[Net.get(0).Weights.length];
+		ArrayList<double> sums = new ArrayList<double>();//[Net.get(0).Weights.length];
 		int i = 0;
 		for(Neuron n : Net){
-			for(int y = 0; y < n.Weights.length; y++){
-				sums[y] += (sample.inputs[i])*n.Weights[y];
+			for(int y = 0; y < n.Weights.size(); y++){
+				sums.add(0)
+				sums.set(y) = sums.get(y) + (sample.inputs[i])*n.Weights.get(y);
 			}
 			i++;
 		}
 		int maxid = 0;
-		for(int x = 0; x < Net.get(0).Weights.length; x++){
-			if (sums[maxid] < sums[x])
+		for(int x = 0; x < Net.get(0).Weights.size(); x++){
+			if (sums.get(maxid) < sums.get(x))
 				maxid = x;
 		}
 		return maxid;
 	}
-	public static void preprocessingRoutine(ArrayList data){
-		//remove noise
-		
+	public static void preprocessingRoutine(ArrayList data, ArrayList gestureList){
 		//collapse idle nodes
-		
-		//separate dynamic nodes using association net
+		int n;
+		double L2 = 0.75;
+		int i = 0;
+		while (i < data.size() - 1){
+			dataObject cur = data.get(i);
+			dataObject next = data.get(i + 1);
+			boolean sim = true;
+			while (sim){
+				double dist = 0;
+				for (int x = 0; x < cur.numInputs; x++){ // calculate euclidian distance
+					double temp = mathf.sqr(cur.inputs[x] - next.inputs[x]);
+					dist += temp*temp;
+				}
+				if (dist > L2 || i = data.size() - 2){ // indicated nodes are too similare
+					sim = false;
+				}
+				else{
+					cur.stup();
+					data.remove(next);
+					next = data.get(i + 1);
+				}
+				i++;
+			}
+		}
+		//separate dynamic nodes using node tree on training set
+		//in future editions this may need to have an edit function
+		 
 		
 		
 	}
