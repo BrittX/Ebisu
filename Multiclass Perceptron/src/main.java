@@ -93,7 +93,7 @@ public class main {
 					for(Neuron n : Net){
 						n.Weights.add(n.Weights.get(0) + 0.0125*sample.inputs[i]);
 						sample.setTag(n.Weights.size()-1);
-						n.Weights.set(0,(n.Weights.get(0) - 0.0125*sample.inputs[i])); //new node recognized
+						n.Weights.set(0,(n.Weights.get(0) - 10*sample.inputs[i])); //new node recognized
 						i++;
 					}
 				}
