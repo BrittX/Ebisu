@@ -63,7 +63,12 @@ public class main {
 			int numLines = Integer.parseInt(br.readLine());
 			for(int i =0; i < numLines; i++){
 				String[] linearr = br.readLine().split(",");
-				dataObject temp = new dataObject(Integer.parseInt(linearr[numInputs]),numInputs);
+				dataObject temp;
+				if (linearr.length <= numInputs) //means node is not tagged
+					temp = new dataObject(0,numInputs);
+				else
+					temp = new dataObject(Integer.parseInt(linearr[numInputs]),numInputs);
+				
 				for(int y = 0; y < numInputs; y++){
 					temp.inputs[y] = Double.parseDouble(linearr[y]);
 				}
@@ -82,17 +87,21 @@ public class main {
 			for(dataObject sample : data){
 				int ans = feed(Net,sample);
 				if (ans == 0){
-					n.Weights.add(n.Weights.get(0) + 0.0125*sample.inputs[i]);
-					sample.setTag(n.Weights.size()-1);
-					n.Weights.set(0) = n.Weights.get(0) - 0.0125*sample.inputs[i]; //new node recognized
-					System.out.println("New Node Type recognized");
+					int i = 0;
+					for(Neuron n : Net){
+						n.Weights.add(n.Weights.get(0) + 0.0125*sample.inputs[i]);
+						sample.setTag(n.Weights.size()-1);
+						n.Weights.set(0,(n.Weights.get(0) - 0.0125*sample.inputs[i])); //new node recognized
+						System.out.println("New Node Type recognized");
+						i++;
+					}
 				}
 				else if (ans != sample.tag){
 					perfect = false;
 					int i = 0;
 					for(Neuron n : Net){
-						n.Weights.set(ans) = n.Weights.get(ans) - 0.0125*sample.inputs[i];
-						n.Weights.set(sample.tag) = n.Weights.get(sample.tag) + 0.0125*sample.inputs[i];
+						n.Weights.set(ans, (n.Weights.get(ans) - 0.0125*sample.inputs[i]));
+						n.Weights.set(sample.tag,(n.Weights.get(sample.tag) + 0.0125*sample.inputs[i]));
 						i++;
 					}
 				}
@@ -116,12 +125,12 @@ public class main {
 			System.out.println("Testing complete with " + accuracy*100 + "% accuracy.");
 		}
 	public static int feed(ArrayList<Neuron> Net, dataObject sample){
-		ArrayList<double> sums = new ArrayList<double>();//[Net.get(0).Weights.length];
+		ArrayList<Double> sums = new ArrayList<Double>();//[Net.get(0).Weights.length];
 		int i = 0;
 		for(Neuron n : Net){
 			for(int y = 0; y < n.Weights.size(); y++){
-				sums.add(0)
-				sums.set(y) = sums.get(y) + (sample.inputs[i])*n.Weights.get(y);
+				sums.add(0.0);
+				sums.set(y, (sums.get(y) + (sample.inputs[i])*n.Weights.get(y)));
 			}
 			i++;
 		}
@@ -138,22 +147,22 @@ public class main {
 		double L2 = 0.75;
 		int i = 0;
 		while (i < data.size() - 1){
-			dataObject cur = data.get(i);
-			dataObject next = data.get(i + 1);
+			dataObject cur = (dataObject)data.get(i);
+			dataObject next = (dataObject)data.get(i + 1);
 			boolean sim = true;
 			while (sim){
 				double dist = 0;
 				for (int x = 0; x < cur.numInputs; x++){ // calculate euclidian distance
-					double temp = mathf.sqr(cur.inputs[x] - next.inputs[x]);
+					double temp = cur.inputs[x] - next.inputs[x];
 					dist += temp*temp;
 				}
-				if (dist > L2 || i = data.size() - 2){ // indicated nodes are too similare
+				if (dist > L2 || i == data.size() - 2){ // indicated nodes are too similare
 					sim = false;
 				}
 				else{
 					cur.stup();
 					data.remove(next);
-					next = data.get(i + 1);
+					next = (dataObject)data.get(i + 1);
 				}
 				i++;
 			}

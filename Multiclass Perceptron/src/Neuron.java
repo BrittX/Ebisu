@@ -15,17 +15,18 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import java.util.*;
 
 public class Neuron 
 {
 	public double		Value;
-	public ArrayList<double>	Weights;
+	public ArrayList<Double>	Weights;
 	public double		Bias;
 	public double		Delta;
 	
 	public Neuron(int prevLayerSize)
 	{
-		Weights = new ArrayList<double>();
+		Weights = new ArrayList<Double>();
 		Bias = Math.random() / 10000000000000.0;
 		Delta = Math.random() / 10000000000000.0;
 		Value = Math.random() / 10000000000000.0;
