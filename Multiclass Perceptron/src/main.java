@@ -61,7 +61,7 @@ public class main {
 		try{
 			BufferedReader br = new BufferedReader(new FileReader(new File(setFile)));
 			int numLines = Integer.parseInt(br.readLine());
-			for(int i =0; i < numLines; i++){
+			for(int i = 0; i < numLines; i++){
 				String[] linearr = br.readLine().split(",");
 				dataObject temp;
 				if (linearr.length <= numInputs) //means node is not tagged
@@ -78,6 +78,20 @@ public class main {
 			System.out.println(e.toString());
 		}
 	}
+	public static void learn(ArrayList<Cluster> map, ArrayList<Vector> data){
+		Cluster near = null;
+		float dist = -1.0f;
+		for (dp : data){
+			for (cl : map){
+				float temp = cl.clusterDist(dp);
+				if (dist > 0 && dist < temp){
+					dist = temp;
+					near = cl;
+				}
+			}
+		}
+	}
+	/*
 	public static void learn(ArrayList<Neuron> Net, ArrayList<dataObject> data){
 		boolean perfect = false;
 		int c = 0;
@@ -86,14 +100,13 @@ public class main {
 			perfect = true;
 			for(dataObject sample : data){
 				int ans = feed(Net,sample);
-				if (ans == 0){
+				if (ans == 0){ //problematic code block
 					System.out.println("New Node Type recognized");
 					perfect = false;
 					int i = 0;
+					sample.setTag(Net.get(0).Weights.size()-1);
 					for(Neuron n : Net){
-						n.Weights.add(n.Weights.get(0) + 0.0125*sample.inputs[i]);
-						sample.setTag(n.Weights.size()-1);
-						n.Weights.set(0,(n.Weights.get(0) - 10*sample.inputs[i])); //new node recognized
+						n.Weights.add(n.Weights.get(0) + 0.5*sample.inputs[i]);
 						i++;
 					}
 				}
@@ -111,6 +124,7 @@ public class main {
 		}
 		System.out.println("Learning completed in " + c + "epochs.");
 	}
+	*/
 	public static void test(ArrayList<Neuron> Net, ArrayList<dataObject> data, ArrayList<String> dict){
 			float accuracy = 0.0f;
 			int numSamp = 0;
@@ -136,10 +150,14 @@ public class main {
 			}
 			i++;
 		}
-		int maxid = 0;
-		for(int x = 0; x < Net.get(0).Weights.size(); x++){
+		int maxid = 1;
+		for(int x = 1; x < Net.get(0).Weights.size(); x++){
 			if (sums.get(maxid) < sums.get(x))
 				maxid = x;
+		}
+		if(sums.get(maxid) < 4){
+			System.out.println(sums.get(maxid));
+			return 0;
 		}
 		return maxid;
 	}
