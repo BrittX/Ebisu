@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 public class main {
-
+	static float MAX_DIST = 0.0f;
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		String trnSet;
@@ -22,18 +22,19 @@ public class main {
 		numClasses = Integer.parseInt(args[3]);
 		config = args[4];
 		System.out.println("Starting variables assigned");
+		ArrayList map = new ArrayList<Cluster>();
 		//initialize network
-		initNet(Net,numIn,numClasses + 1);
 		//retrieve training data set
-		ArrayList train = new ArrayList<dataObject>();
-		ArrayList testingData = new ArrayList<dataObject>();
+		ArrayList train = new ArrayList<Vector>();
+		ArrayList testingData = new ArrayList<Vector>();
 		ArrayList dict = new ArrayList<String>();
 		initConfig(dict,config);
-		//newClassProt
 		retrieveData(train, trnSet, numIn);
 		retrieveData(testingData, testSet, numIn);
-		learn(Net,train);
-		test(Net,testingData,dict);
+		
+		for (Object data : train){
+			System.out.println(feed(map,(Vector)data));
+		}
 	}
 	public static void initConfig(ArrayList<String> dict, String config){
 			try{
@@ -49,28 +50,16 @@ public class main {
 			}
 			System.out.println("Configuration complete");
 	}
-	public static void initNet(ArrayList<Neuron> Net, int numIn, int numClasses){
-		//initialize input layer net
-		
-		for(int i = 0; i < numIn; i++){
-			Net.add(new Neuron(numClasses));
-		}
-		System.out.println("Neural Network Initialized");
-	}
+	
 	public static void retrieveData(ArrayList data, String setFile, int numInputs){
 		try{
 			BufferedReader br = new BufferedReader(new FileReader(new File(setFile)));
 			int numLines = Integer.parseInt(br.readLine());
 			for(int i = 0; i < numLines; i++){
 				String[] linearr = br.readLine().split(",");
-				dataObject temp;
-				if (linearr.length <= numInputs) //means node is not tagged
-					temp = new dataObject(0,numInputs);
-				else
-					temp = new dataObject(Integer.parseInt(linearr[numInputs]),numInputs);
-				
-				for(int y = 0; y < numInputs; y++){
-					temp.inputs[y] = Double.parseDouble(linearr[y]);
+				Vector temp = new Vector();
+				for (int x = 0; x < linearr.length; x++){
+					temp.add(Float.parseFloat(linearr[x]));
 				}
 				data.add(temp);
 			}
@@ -78,119 +67,62 @@ public class main {
 			System.out.println(e.toString());
 		}
 	}
-	public static void learn(ArrayList<Cluster> map, ArrayList<Vector> data){
+	public static int feed(ArrayList<Cluster> map, Vector data){
 		Cluster near = null;
 		float dist = -1.0f;
-		for (dp : data){
-			for (cl : map){
-				float temp = cl.clusterDist(dp);
-				if (dist > 0 && dist < temp){
-					dist = temp;
-					near = cl;
-				}
+		for (Object cl : map){
+			
+			Cluster cur = (Cluster)cl;
+			float temp = cur.clusterDist(data);
+			if (dist < 0 || dist < temp){
+				dist = temp;
+				near = cur;
+			}
+		}
+		if (dist > 0 && dist < MAX_DIST){
+			near.add(data);
+		}else{
+			System.out.println(dist);
+			near = new Cluster(data,map.size());
+			map.add(near);
+		}
+		return near.getId();
+	}
+	
+	public static void Dbscan(ArrayList<dataPoint> data, float eps, int minPts){
+		int C = 0;
+		for (dataPoint p : data){
+			if (p.visited)
+				continue;
+			p.visited = true;
+			ArrayList neighbors = rQuery(p, eps, data);
+			if (neighbors.size() < minPts)
+				p.noise = true;
+			else{
+				C++;
+				expandCluster(p, neighbors, C, eps, minPts);
 			}
 		}
 	}
-	/*
-	public static void learn(ArrayList<Neuron> Net, ArrayList<dataObject> data){
-		boolean perfect = false;
-		int c = 0;
-		while(!perfect){
-			System.out.println("current epoch number: " + c);
-			perfect = true;
-			for(dataObject sample : data){
-				int ans = feed(Net,sample);
-				if (ans == 0){ //problematic code block
-					System.out.println("New Node Type recognized");
-					perfect = false;
-					int i = 0;
-					sample.setTag(Net.get(0).Weights.size()-1);
-					for(Neuron n : Net){
-						n.Weights.add(n.Weights.get(0) + 0.5*sample.inputs[i]);
-						i++;
-					}
-				}
-				else if (ans != sample.tag){
-					perfect = false;
-					int i = 0;
-					for(Neuron n : Net){
-						n.Weights.set(ans, (n.Weights.get(ans) - 0.0125*sample.inputs[i]));
-						n.Weights.set(sample.tag,(n.Weights.get(sample.tag) + 0.0125*sample.inputs[i]));
-						i++;
-					}
-				}
+	public static void expandCluster(dataPoint p, ArrayList<dataPoint> neighbors, int C, float eps, int minPts){
+		p.cluster = C; //add p to cluster C
+		for (dataPoint dp : neighbors){
+			if (!dp.visited){
+				dp.visited = true;
+				ArrayList primeNeighbors = rQuery(dp, eps, data);
+				if (primeNeighbors.size() >= minPts)
+					neighbors.addAll(primeNeighbors);
 			}
-			c++;
+			if (dp.cluster == 0)
+				dp.cluster = c;
 		}
-		System.out.println("Learning completed in " + c + "epochs.");
 	}
-	*/
-	public static void test(ArrayList<Neuron> Net, ArrayList<dataObject> data, ArrayList<String> dict){
-			float accuracy = 0.0f;
-			int numSamp = 0;
-			for(dataObject sample : data){
-				int ans = feed(Net,sample);
-				System.out.println(ans);
-				
-				if(ans == sample.tag)
-					accuracy += 1.0f;
-				numSamp++;
-				
-			}
-			accuracy = accuracy/numSamp;
-			System.out.println("Testing complete with " + accuracy*100 + "% accuracy.");
+	public static ArrayList<dataPoint>(dataPoint dp, float eps, ArrayList<dataPoint> data){
+		ArrayList neighbors = new ArrayList<dataPoint>();
+		for (dataPoint p : data){
+			if (p.dist(dp) < eps)
+				neighbors.add(p);
 		}
-	public static int feed(ArrayList<Neuron> Net, dataObject sample){
-		ArrayList<Double> sums = new ArrayList<Double>();//[Net.get(0).Weights.length];
-		int i = 0;
-		for(Neuron n : Net){
-			for(int y = 0; y < n.Weights.size(); y++){
-				sums.add(0.0);
-				sums.set(y, (sums.get(y) + (sample.inputs[i])*n.Weights.get(y)));
-			}
-			i++;
-		}
-		int maxid = 1;
-		for(int x = 1; x < Net.get(0).Weights.size(); x++){
-			if (sums.get(maxid) < sums.get(x))
-				maxid = x;
-		}
-		if(sums.get(maxid) < 4){
-			System.out.println(sums.get(maxid));
-			return 0;
-		}
-		return maxid;
-	}
-	public static void preprocessingRoutine(ArrayList data, ArrayList gestureList){
-		//collapse idle nodes
-		int n;
-		double L2 = 0.75;
-		int i = 0;
-		while (i < data.size() - 1){
-			dataObject cur = (dataObject)data.get(i);
-			dataObject next = (dataObject)data.get(i + 1);
-			boolean sim = true;
-			while (sim){
-				double dist = 0;
-				for (int x = 0; x < cur.numInputs; x++){ // calculate euclidian distance
-					double temp = cur.inputs[x] - next.inputs[x];
-					dist += temp*temp;
-				}
-				if (dist > L2 || i == data.size() - 2){ // indicated nodes are too similare
-					sim = false;
-				}
-				else{
-					cur.stup();
-					data.remove(next);
-					next = (dataObject)data.get(i + 1);
-				}
-				i++;
-			}
-		}
-		//separate dynamic nodes using node tree on training set
-		//in future editions this may need to have an edit function
-		 
-		
-		
+		return neighbors;
 	}
 }
