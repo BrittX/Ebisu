@@ -4,7 +4,7 @@ public class dataPoint {
 	public boolean visited;
 	public boolean noise;
 	int numInputs;
-	int strength;
+	public int strength;
 	public double[] inputs;
 	public dataPoint(int numInputs){
 		this.numInputs = numInputs;

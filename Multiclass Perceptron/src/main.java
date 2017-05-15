@@ -29,16 +29,28 @@ public class main {
 		ArrayList train = new ArrayList<dataPoint>();
 		ArrayList testingData = new ArrayList<dataPoint>();
 		ArrayList dict = new ArrayList<String>();
+		ArrayList log = new ArrayList<dataPoint>(); 
 		initConfig(dict,config);
 		retrieveData(train, trnSet, numIn);
 		retrieveData(testingData, testSet, numIn);
 		Dbscan(train, 75, 6);
-		for (Object data : train){
+		log.add(train.get(0));
+		for (int i = 1; i < train.size(); i++){
+			dataPoint cur = (dataPoint)train.get(i);
+			dataPoint prev = (dataPoint)train.get(i-1);
+			if (cur.cluster != prev.cluster)
+				log.add(cur);
+			else{
+				dataPoint lastLog = (dataPoint)log.get(log.size()-1);
+				lastLog.stup();
+			}	
+		}
+		for (Object data : log){
 			dataPoint dt = (dataPoint)data;
 			if (dt.cluster < dict.size())
-				System.out.println(dict.get(dt.cluster));
+				System.out.println(dict.get(dt.cluster) + " strength: " + dt.strength);
 			else
-				System.out.println("New Gesture " + dt.cluster);
+				System.out.println("New Gesture " + dt.cluster + " strength: " + dt.strength);
 		}
 	}
 	public static void initConfig(ArrayList<String> dict, String config){
