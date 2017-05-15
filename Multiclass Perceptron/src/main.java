@@ -19,21 +19,23 @@ public class main {
 		trnSet = args[0];
 		testSet = args[1];
 		numIn = Integer.parseInt(args[2]);
+		// num classes will likely be unnecessary soon
 		numClasses = Integer.parseInt(args[3]);
 		config = args[4];
 		System.out.println("Starting variables assigned");
 		ArrayList map = new ArrayList<Cluster>();
 		//initialize network
 		//retrieve training data set
-		ArrayList train = new ArrayList<Vector>();
-		ArrayList testingData = new ArrayList<Vector>();
+		ArrayList train = new ArrayList<dataPoint>();
+		ArrayList testingData = new ArrayList<dataPoint>();
 		ArrayList dict = new ArrayList<String>();
 		initConfig(dict,config);
 		retrieveData(train, trnSet, numIn);
 		retrieveData(testingData, testSet, numIn);
-		
+		Dbscan(train, 50, 6);
 		for (Object data : train){
-			System.out.println(feed(map,(Vector)data));
+			dataPoint dt = (dataPoint)data;
+			System.out.println(dt.cluster);
 		}
 	}
 	public static void initConfig(ArrayList<String> dict, String config){
@@ -51,15 +53,15 @@ public class main {
 			System.out.println("Configuration complete");
 	}
 	
-	public static void retrieveData(ArrayList data, String setFile, int numInputs){
+	public static void retrieveData(ArrayList<dataPoint> data, String setFile, int numInputs){
 		try{
 			BufferedReader br = new BufferedReader(new FileReader(new File(setFile)));
 			int numLines = Integer.parseInt(br.readLine());
 			for(int i = 0; i < numLines; i++){
 				String[] linearr = br.readLine().split(",");
-				Vector temp = new Vector();
-				for (int x = 0; x < linearr.length; x++){
-					temp.add(Float.parseFloat(linearr[x]));
+				dataPoint temp = new dataPoint(numInputs);
+				for (int x = 0; x < numInputs; x++){
+					temp.inputs[x] = Float.parseFloat(linearr[x]);
 				}
 				data.add(temp);
 			}
@@ -100,24 +102,27 @@ public class main {
 				p.noise = true;
 			else{
 				C++;
-				expandCluster(p, neighbors, C, eps, minPts);
+				expandCluster(p, neighbors, C, eps, minPts, data);
 			}
 		}
 	}
-	public static void expandCluster(dataPoint p, ArrayList<dataPoint> neighbors, int C, float eps, int minPts){
-		p.cluster = C; //add p to cluster C
-		for (dataPoint dp : neighbors){
-			if (!dp.visited){
-				dp.visited = true;
-				ArrayList primeNeighbors = rQuery(dp, eps, data);
+	public static void expandCluster(dataPoint p, ArrayList<dataPoint> neighbors, int C, float eps, int minPts, ArrayList<dataPoint> data){
+		p.cluster = C;//add p to cluster C
+		int i = 0; // counter variable
+		while(i < neighbors.size()){
+			if (!neighbors.get(i).visited){
+				neighbors.get(i).visited = true;
+				ArrayList primeNeighbors = rQuery(neighbors.get(i), eps, data);
 				if (primeNeighbors.size() >= minPts)
 					neighbors.addAll(primeNeighbors);
 			}
-			if (dp.cluster == 0)
-				dp.cluster = c;
+			if (neighbors.get(i).cluster == 0)
+				neighbors.get(i).cluster = C;
+				
+			i++;
 		}
 	}
-	public static ArrayList<dataPoint>(dataPoint dp, float eps, ArrayList<dataPoint> data){
+	public static ArrayList<dataPoint> rQuery(dataPoint dp, float eps, ArrayList<dataPoint> data){
 		ArrayList neighbors = new ArrayList<dataPoint>();
 		for (dataPoint p : data){
 			if (p.dist(dp) < eps)
