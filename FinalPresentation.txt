@@ -1,0 +1,25 @@
+Background/Related Work:
+  
+Overview/Goals:
+  Our initial goals were to be able to design a wearable combined with a machine
+  learning algorithm that could be used as a new type of input device. This wearable
+  would be useful in taking gestures, and being able to classify those gestures.
+Details
+  For our project, there were two main sections, the hardware and software. Originally,
+  our goal was to incorporate only accelerometers and use that data to process gesture
+  data. However, during the design and research of the prototype we found that using
+  Flex sensors in addition to the accelerometers would provide even more accurate data.
+  Once the items were purchased, we put together the first iteration of Ebisu with one
+  accelerometer and five flex sensors for each finger. Then our next goal was accessing
+  the data from the sensors and implementing the perceptron. The perceptron as our Machine
+  Learning Algorithm was a great idea as it would be able to accurately classify the gestures
+  and implement supervised learning well. However, as we perfected supervised learning on the
+  static gestures, and began to incorporate the accelerometer data, we noticed that the
+  perceptron was not able to handle unsupervised learning well. So currently, we have implemented
+  a different algorithm called K-NN which utilizes clusters to be able to group each gesture.
+Demonstration:
+  Show supervised learning with one of the training files.
+  Taking suggestions of 2-3 different gestures from the class and showing how
+  unsupervised learning works.
+Questions:
+  Any questions?
