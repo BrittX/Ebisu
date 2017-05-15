@@ -1,0 +1,5 @@
+NOISE
+yes
+why
+no
+camera
