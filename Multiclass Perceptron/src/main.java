@@ -33,7 +33,7 @@ public class main {
 		initConfig(dict,config);
 		retrieveData(train, trnSet, numIn);
 		retrieveData(testingData, testSet, numIn);
-		Dbscan(train, 50, 10);
+		Dbscan(train, 35, 10);
 		log.add(train.get(0));
 		for (int i = 1; i < train.size(); i++){
 			dataPoint cur = (dataPoint)train.get(i);
