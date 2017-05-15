@@ -32,10 +32,13 @@ public class main {
 		initConfig(dict,config);
 		retrieveData(train, trnSet, numIn);
 		retrieveData(testingData, testSet, numIn);
-		Dbscan(train, 50, 6);
+		Dbscan(train, 75, 6);
 		for (Object data : train){
 			dataPoint dt = (dataPoint)data;
-			System.out.println(dt.cluster);
+			if (dt.cluster < dict.size())
+				System.out.println(dict.get(dt.cluster));
+			else
+				System.out.println("New Gesture " + dt.cluster);
 		}
 	}
 	public static void initConfig(ArrayList<String> dict, String config){
